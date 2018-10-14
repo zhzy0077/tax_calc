@@ -15,6 +15,10 @@ class TaxCalculator {
             }.map { person ->
                 val taxResult = TaxStandard.calcTax(person.taxModel.taxSalary)
 
+                if (person.taxModel.taxSalary <= 0.0) {
+                    person.taxModel.taxSalary = 0.0
+                }
+
                 person.taxModel.taxRate = taxResult.taxRate
                 person.taxModel.taxDeduction = taxResult.taxDeduction
                 person.taxModel.tax = taxResult.tax
@@ -28,7 +32,11 @@ class TaxCalculator {
 
                 person
             }.map { person ->
-                val taxResult = TaxStandard.calcSalary(person.taxWithWelfare.salaryAfterTax, person.taxWithWelfare.welfare)
+                val taxResult = TaxStandard.calcSalary(
+                        person.taxWithWelfare.salaryAfterTax,
+                        person.taxWithWelfare.welfare,
+                        person.taxWithWelfare.insurance
+                )
 
                 person.taxWithWelfare.taxRate = taxResult.taxRate
                 person.taxWithWelfare.taxDeduction = taxResult.taxDeduction
