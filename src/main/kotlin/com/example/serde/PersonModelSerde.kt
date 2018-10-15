@@ -14,7 +14,7 @@ class PersonModelSerde {
 
             val lastRowNum = sheet.lastRowNum
 
-            return IntStream.range(0, lastRowNum)
+            return IntStream.range(0, lastRowNum + 1)
                     .skip(SerdeConfig.headNumber.toLong())
                     .mapToObj { sheet.getRow(it) }
                     .filter { it != null }
@@ -25,7 +25,11 @@ class PersonModelSerde {
 
         private fun mapRow(row: Row): Optional<PersonModel> {
             val person = PersonModel()
-            row.forEachIndexed { index, cell ->
+            for (index in 0..20) {
+                val cell = row.getCell(index)
+                if (cell == null || cell.cellType == CellType.BLANK) {
+                    continue
+                }
                 when (index + 1) {
                     1 -> person.name = cell.stringCellValue
                     2 -> person.dept = cell.stringCellValue
@@ -85,29 +89,29 @@ class PersonModelSerde {
                 val row = sheet.createRow(sheetIndex)
 
                 for (cellIndex in 0..19) {
-                        when (cellIndex + 1) {
-                            1 -> createStringCell(row, cellIndex, person.name)
-                            2 -> createStringCell(row, cellIndex, person.dept)
-                            3 -> createMoneyCell(row, cellIndex, person.taxModel.salary)
-                            4 -> createMoneyCell(row, cellIndex, person.taxModel.insurance)
-                            5 -> createGeneralNumCell(row, cellIndex, person.taxModel.taxStandard)
-                            6 -> createMoneyCell(row, cellIndex, person.taxModel.taxSalary)
-                            7 -> createPercentCell(row, cellIndex, person.taxModel.taxRate)
-                            8 -> createGeneralNumCell(row, cellIndex, person.taxModel.taxDeduction)
-                            9 -> createMoneyCell(row, cellIndex, person.taxModel.tax)
-                            10 -> createMoneyCell(row, cellIndex, person.taxModel.salaryAfterTax)
+                    when (cellIndex + 1) {
+                        1 -> createStringCell(row, cellIndex, person.name)
+                        2 -> createStringCell(row, cellIndex, person.dept)
+                        3 -> createMoneyCell(row, cellIndex, person.taxModel.salary)
+                        4 -> createMoneyCell(row, cellIndex, person.taxModel.insurance)
+                        5 -> createGeneralNumCell(row, cellIndex, person.taxModel.taxStandard)
+                        6 -> createMoneyCell(row, cellIndex, person.taxModel.taxSalary)
+                        7 -> createPercentCell(row, cellIndex, person.taxModel.taxRate)
+                        8 -> createGeneralNumCell(row, cellIndex, person.taxModel.taxDeduction)
+                        9 -> createMoneyCell(row, cellIndex, person.taxModel.tax)
+                        10 -> createMoneyCell(row, cellIndex, person.taxModel.salaryAfterTax)
 
 
-                            11 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.salary)
-                            12 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.welfare)
-                            13 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.insurance)
-                            14 -> createGeneralNumCell(row, cellIndex, person.taxWithWelfare.taxStandard)
-                            15 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.taxSalary)
-                            16 -> createPercentCell(row, cellIndex, person.taxWithWelfare.taxRate)
-                            17 -> createGeneralNumCell(row, cellIndex, person.taxWithWelfare.taxDeduction)
-                            18 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.tax)
-                            19 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.salaryAfterTax)
-                        }
+                        11 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.salary)
+                        12 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.welfare)
+                        13 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.insurance)
+                        14 -> createGeneralNumCell(row, cellIndex, person.taxWithWelfare.taxStandard)
+                        15 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.taxSalary)
+                        16 -> createPercentCell(row, cellIndex, person.taxWithWelfare.taxRate)
+                        17 -> createGeneralNumCell(row, cellIndex, person.taxWithWelfare.taxDeduction)
+                        18 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.tax)
+                        19 -> createMoneyCell(row, cellIndex, person.taxWithWelfare.salaryAfterTax)
+                    }
                 }
             }
 

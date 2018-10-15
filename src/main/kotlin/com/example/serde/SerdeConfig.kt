@@ -15,5 +15,7 @@ object SerdeConfig {
 
     val columnStyle = mutableMapOf<Int, CellStyle>()
 
+    var columnSize = 20
+
 //    var columnMapping: List<Int> = IntStream.range(0, 21).boxed().collect(toList())
 }

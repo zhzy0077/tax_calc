@@ -35,7 +35,7 @@ object TaxStandard {
         }
 
         for ((current, next) in standards.zipWithNext()) {
-            if (taxSalary >= current.start && taxSalary < next.start) {
+            if (taxSalary > current.start && taxSalary <= next.start) {
                 val tax = taxSalary * current.taxRate - current.taxDeduction
                 val salaryAfterTax = taxSalary - tax + taxStandard
                 return current.copy(tax = tax, salaryAfterTax = salaryAfterTax, taxSalary = taxSalary)
@@ -54,15 +54,18 @@ object TaxStandard {
                     (salaryAfterTax + welfare * current.taxRate - taxStandard * current.taxRate - current.taxDeduction) /
                             (1 - current.taxRate) + insurance
             val taxSalary = salary + welfare - insurance - taxStandard
-            if (taxSalary >= current.start && taxSalary < next.start) {
+            if (taxSalary > current.start && taxSalary <= next.start) {
                 val tax = salary - salaryAfterTax
                 return current.copy(tax = tax, salaryAfterTax = salaryAfterTax, taxSalary = taxSalary, salary = salary)
             }
         }
         val current = standards.last()
-        val taxSalary = (salaryAfterTax - current.taxDeduction) / (1 - current.taxRate)
+        val salary =
+                (salaryAfterTax + welfare * current.taxRate - taxStandard * current.taxRate - current.taxDeduction) /
+                        (1 - current.taxRate) + insurance
+        val taxSalary = salary + welfare - insurance - taxStandard
         val tax = taxSalary - salaryAfterTax
-        return current.copy(tax = tax, salaryAfterTax = salaryAfterTax, taxSalary = taxSalary)
+        return current.copy(tax = tax, salaryAfterTax = salaryAfterTax, taxSalary = taxSalary, salary = salary)
     }
 }
 
