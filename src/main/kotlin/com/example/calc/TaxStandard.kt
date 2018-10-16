@@ -55,7 +55,7 @@ object TaxStandard {
                             (1 - current.taxRate) + insurance
             val taxSalary = salary + welfare - insurance - taxStandard
             if (taxSalary > current.start && taxSalary <= next.start) {
-                val tax = salary - salaryAfterTax
+                val tax = salary - insurance - salaryAfterTax
                 return current.copy(tax = tax, salaryAfterTax = salaryAfterTax, taxSalary = taxSalary, salary = salary)
             }
         }
