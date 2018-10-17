@@ -50,22 +50,23 @@ object TaxStandard {
 
     fun calcSalary(salaryAfterTax: Double, welfare: Double, insurance: Double): TaxResult {
         for ((current, next) in standards.zipWithNext()) {
-            val salary =
-                    (salaryAfterTax + welfare * current.taxRate - taxStandard * current.taxRate - current.taxDeduction) /
-                            (1 - current.taxRate) + insurance
-            val taxSalary = salary + welfare - insurance - taxStandard
+            val (salary, taxSalary, tax) = calc0(salaryAfterTax, welfare, current, insurance)
             if (taxSalary > current.start && taxSalary <= next.start) {
-                val tax = salary - insurance - salaryAfterTax
                 return current.copy(tax = tax, salaryAfterTax = salaryAfterTax, taxSalary = taxSalary, salary = salary)
             }
         }
         val current = standards.last()
+        val (salary, taxSalary, tax) = calc0(salaryAfterTax, welfare, current, insurance)
+        return current.copy(tax = tax, salaryAfterTax = salaryAfterTax, taxSalary = taxSalary, salary = salary)
+    }
+
+    private fun calc0(salaryAfterTax: Double, welfare: Double, current: TaxResult, insurance: Double): Triple<Double, Double, Double> {
         val salary =
                 (salaryAfterTax + welfare * current.taxRate - taxStandard * current.taxRate - current.taxDeduction) /
                         (1 - current.taxRate) + insurance
         val taxSalary = salary + welfare - insurance - taxStandard
-        val tax = taxSalary - salaryAfterTax
-        return current.copy(tax = tax, salaryAfterTax = salaryAfterTax, taxSalary = taxSalary, salary = salary)
+        val tax = salary - insurance - salaryAfterTax
+        return Triple(salary, taxSalary, tax)
     }
 }
 
